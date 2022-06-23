@@ -1,49 +1,55 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: rgb(245, 129, 62);
+  background: rgba(0, 0, 0, 0.5)
+    url(https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg?cs=srgb&dl=pexels-li-sun-2294361.jpg&fm=jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: darken;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-#pomodoro-clock{
+#pomodoro-clock {
+  margin-top: 3%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-#adjust{
+#adjust {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 700px;
 }
 
-.container-adjust{
+.container-adjust {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-width: 50%;
+  width: 50%;
 }
 
-.title-adjust{
-  font-size: 2rem;
-  color:rgb(245, 129, 62);;
-  background-color: white ;
+.title-adjust {
+  font-size: 1.7rem;
+  color: white;
+  font-weight: 400;
   padding: 15px;
   border-radius: 50px;
 }
 
-.controls-adjust{
+.controls-adjust {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -51,25 +57,47 @@ width: 50%;
   width: 50%;
 }
 
-.adjust-button{
-  background-color: rgb(245, 129, 62);
+.adjust-button {
+  background-color: transparent;
   border: none;
-  color: white;
+  color: rgb(245, 129, 62);
   padding: 10px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 30px;
-  margin: 4px 2px;
   cursor: pointer;
 }
-h1{
+
+#clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: none;
+  border: 5px solid white;
+  border-radius: 500px;
+  width: 300px;
+  height: 300px;
+}
+
+#timer-label{
+
+  color: white;
+  font-weight: 400;
+}
+
+#time-left{
+  font-size: 4rem;
+  font-weight: 500;
+}
+
+h1 {
   font-size: 50px;
   color: white;
 }
-p{
+p {
   color: white;
   font-size: 25px;
+  font-weight: 500;
 }
-
-

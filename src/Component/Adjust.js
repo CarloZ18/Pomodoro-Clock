@@ -5,20 +5,20 @@ const Adjust = ({ numBreak, numSession }) => {
   return (
     <div id="adjust">
       <div className="container-adjust">
-              <p className='title-adjust'>Break Length</p>
+              <p id="break-label" className='title-adjust'>Break Length</p>
         <div className="controls-adjust">
-        <button className="adjust-button"><FontAwesomeIcon icon={faArrowDown}/></button>
-        <p>{numBreak}</p>
-        <button className="adjust-button"><FontAwesomeIcon icon={faArrowUp}/></button>
+        <button id="break-decrement" className="adjust-button"><FontAwesomeIcon icon={faArrowDown}/></button>
+        <p id="break-length">{numBreak}</p>
+        <button id="break-increment" className="adjust-button"><FontAwesomeIcon icon={faArrowUp}/></button>
         </div>
       </div>
 
       <div className="container-adjust">
-        <p className='title-adjust'>Session Length</p>
+        <p id="session-label" className='title-adjust'>Session Length</p>
         <div className="controls-adjust">
-           <button className="adjust-button"><FontAwesomeIcon icon={faArrowDown}/></button>
-        <p>{numSession}</p>
-        <button className="adjust-button"><FontAwesomeIcon icon={faArrowUp}/></button>  
+           <button id="session-decrement" className="adjust-button"><FontAwesomeIcon icon={faArrowDown}/></button>
+        <p id="session-length">{numSession}</p>
+        <button id="session-increment" className="adjust-button"><FontAwesomeIcon icon={faArrowUp}/></button>  
         </div>
       </div>
     </div>
