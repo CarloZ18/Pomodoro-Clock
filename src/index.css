@@ -5,9 +5,71 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(245, 129, 62);
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#pomodoro-clock{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#adjust{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 700px;
+}
+
+.container-adjust{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+width: 50%;
+}
+
+.title-adjust{
+  font-size: 2rem;
+  color:rgb(245, 129, 62);;
+  background-color: white ;
+  padding: 15px;
+  border-radius: 50px;
+}
+
+.controls-adjust{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 50%;
+}
+
+.adjust-button{
+  background-color: rgb(245, 129, 62);
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 30px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+h1{
+  font-size: 50px;
+  color: white;
+}
+p{
+  color: white;
+  font-size: 25px;
+}
+
+
