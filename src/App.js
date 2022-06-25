@@ -37,7 +37,7 @@ function App() {
 
   return (
     <div id="pomodoro-clock">
-      <h1>Excercises Timer</h1>
+      <h1 id="title">Excercises Timer</h1>
       <Adjust
         numBreak={numBreak}
         numSession={min}

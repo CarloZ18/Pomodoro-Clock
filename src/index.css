@@ -18,6 +18,10 @@ code {
     monospace;
 }
 
+#title{
+  margin: 10px;
+}
+
 #pomodoro-clock {
   display: flex;
   flex-direction: column;
@@ -95,13 +99,13 @@ justify-content: center;
   font-weight: 500;
 }
 
-#controls {
+#controls-functions {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
   width: 200px;
-  padding: 50px;
+  padding: 35px;
 }
 
 #start_stop {
