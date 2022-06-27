@@ -1,38 +1,87 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Adjust from "./Component/Adjust";
 import Clock from "./Component/Clock";
 import Controls from "./Component/Controls";
+import { faPlay, faPause } from "@fortawesome//free-solid-svg-icons";
 
 function App() {
   const [numBreak, setNumBreak] = useState(5);
-  const [min, setMin] = useState(25);
-  const [sec, setSec] = useState(0);
+  const [numSession, setNumSession] = useState(25);
+  const [timer, setTimer] = useState(1500);
 
-  const changeFormat = (min, sec) => {
-    let minutes = min;
-    let seconds = sec;
+  //ADJUST FUNCTIONS
+  const changeFormat = (timer) => {
+    let minutes = Math.floor(timer / 60);
+    let seconds = timer - minutes * 60;
     seconds = seconds < 10 ? "0" + seconds : seconds;
     minutes = minutes < 10 ? "0" + minutes : minutes;
     return minutes + ":" + seconds;
   };
 
   const increaseBreak = () => {
-    setNumBreak(numBreak + 1);
-};
-  const decreaseBreak = () => {
-    if(numBreak > 1){
-     setNumBreak(numBreak - 1); 
+    if(isRunning === false){
+     setNumBreak(numBreak + 1); 
     }
+  };
+  const decreaseBreak = () => {
+    if(isRunning === false){
+       if (numBreak > 1) {
+      setNumBreak(numBreak - 1);
+    }
+    } 
   };
 
   const increaseSession = () => {
-    setMin(min + 1);
-  }
+    if(isRunning === false){      
+      setNumSession(numSession + 1);
+      setTimer((numSession + 1) * 60); 
+    }
+  };
 
   const decreaseSession = () => {
-    if(min > 1){
-     setMin(min - 1); 
+    if(isRunning === false){
+     if (numSession > 1) {
+      setNumSession(numSession - 1);
+      setTimer((numSession - 1) * 60); 
+    } 
+    }    
+  };
+
+  //CONTROLS FUNCTIONS
+  const [isRunning, setIsRunning] = useState(false);
+  const playPause = useRef();
+  const [changeIcon, setChangeIcon] = useState(faPlay);
+
+  const decreaseTimer = () => {
+    setTimer(timer - 1);
+  };
+
+  useEffect(() => {
+    if (isRunning === true) {
+      const interval = setInterval(() => {
+        decreaseTimer();
+      }, 1000);
+      return () => clearInterval(interval);
     }
+  });
+
+  const startStop = () => {
+    if (isRunning === false) {
+      setChangeIcon(faPause);
+      setIsRunning(true);
+
+    } else {
+      setChangeIcon(faPlay);
+      setIsRunning(false);
+    }
+  };
+
+  const reset = () => {
+    setTimer(1500);
+    setNumSession(25);
+    setNumBreak(5);
+    setIsRunning(false);
+    setChangeIcon(faPlay);
   }
 
   return (
@@ -40,14 +89,19 @@ function App() {
       <h1 id="title">Excercises Timer</h1>
       <Adjust
         numBreak={numBreak}
-        numSession={min}
+        numSession={numSession}
         increaseBreak={increaseBreak}
         decreaseBreak={decreaseBreak}
         increaseSession={increaseSession}
         decreaseSession={decreaseSession}
       />
-      <Clock count={changeFormat(min, sec)} />
-      <Controls/>
+      <Clock count={changeFormat(timer)} />
+      <Controls
+        startStop={startStop}
+        reset={reset}
+        playPause={playPause}
+        changeIcon={changeIcon}
+      />
     </div>
   );
 }
