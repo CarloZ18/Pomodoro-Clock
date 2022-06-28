@@ -3,6 +3,7 @@ import Adjust from "./Component/Adjust";
 import Clock from "./Component/Clock";
 import Controls from "./Component/Controls";
 import { faPlay, faPause } from "@fortawesome//free-solid-svg-icons";
+import $ from "jquery";
 
 function App() {
   const [numBreak, setNumBreak] = useState(5);
@@ -19,33 +20,36 @@ function App() {
   };
 
   const increaseBreak = () => {
-    if(isRunning === false){
-     setNumBreak(numBreak + 1); 
+    if (isRunning === false) {
+      setNumBreak(numBreak + 1);
     }
   };
   const decreaseBreak = () => {
-    if(isRunning === false){
-       if (numBreak > 1) {
-      setNumBreak(numBreak - 1);
+    if (isRunning === false) {
+      if (numBreak > 1) {
+        setNumBreak(numBreak - 1);
+      }
     }
-    } 
   };
 
   const increaseSession = () => {
-    if(isRunning === false){      
+    if (isRunning === false) {
       setNumSession(numSession + 1);
-      setTimer((numSession + 1) * 60); 
+      setTimer((numSession + 1) * 60);
     }
   };
 
   const decreaseSession = () => {
-    if(isRunning === false){
-     if (numSession > 1) {
-      setNumSession(numSession - 1);
-      setTimer((numSession - 1) * 60); 
-    } 
-    }    
+    if (isRunning === false) {
+      if (numSession > 1) {
+        setNumSession(numSession - 1);
+        setTimer((numSession - 1) * 60);
+      }
+    }
   };
+
+  //CLOCK FUNCTIONS
+const [nameTimer, setNameTimer] = useState("Session");
 
   //CONTROLS FUNCTIONS
   const [isRunning, setIsRunning] = useState(false);
@@ -61,15 +65,21 @@ function App() {
       const interval = setInterval(() => {
         decreaseTimer();
       }, 1000);
+      if (timer === 0) {
+        //AUDIO EFFECT
+        setTimer(numBreak * 60);
+        setNameTimer("Break");
+        if (timer === 0) {
+          setTimer(numSession * 60);
+        }
+      }
       return () => clearInterval(interval);
     }
-  });
-
+  })
   const startStop = () => {
     if (isRunning === false) {
       setChangeIcon(faPause);
       setIsRunning(true);
-
     } else {
       setChangeIcon(faPlay);
       setIsRunning(false);
@@ -82,7 +92,8 @@ function App() {
     setNumBreak(5);
     setIsRunning(false);
     setChangeIcon(faPlay);
-  }
+    setNameTimer("Session");
+  };
 
   return (
     <div id="pomodoro-clock">
@@ -95,7 +106,7 @@ function App() {
         increaseSession={increaseSession}
         decreaseSession={decreaseSession}
       />
-      <Clock count={changeFormat(timer)} />
+      <Clock count={changeFormat(timer)} nameTimer={nameTimer} />
       <Controls
         startStop={startStop}
         reset={reset}

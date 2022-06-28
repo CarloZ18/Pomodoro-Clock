@@ -1,10 +1,21 @@
-const Clock = ({ count }) => {
+const Clock = ({ count, nameTimer }) => {
+  console.log(count);
   return (
     <div id="clock">
-
-        <p id="timer-label">Session<p id="time-left">{count}</p> </p>
-        
-        
+      <div
+        id="timer-label"
+        className="info"
+        style={count < "01:00" ? { color: "red" } : { color: "white" }}
+      >
+        {nameTimer}
+      </div>
+      <div
+        id="time-left"
+        className="info"
+        style={count < "01:00" ? { color: "red" } : { color: "white" }}
+      >
+        {count}
+      </div>
     </div>
   );
 };

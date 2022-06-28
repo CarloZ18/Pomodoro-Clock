@@ -17,4 +17,5 @@ const Controls = ({ startStop,reset, playPause, changeIcon }) => {
     </div>
   );
 };
+
 export default Controls;
