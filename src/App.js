@@ -3,7 +3,6 @@ import Adjust from "./Component/Adjust";
 import Clock from "./Component/Clock";
 import Controls from "./Component/Controls";
 import { faPlay, faPause } from "@fortawesome//free-solid-svg-icons";
-import $ from "jquery";
 
 function App() {
   const [numBreak, setNumBreak] = useState(5);
@@ -11,7 +10,7 @@ function App() {
   const [timer, setTimer] = useState(1500);
 
   //ADJUST FUNCTIONS
-  const changeFormat = (timer) => {
+  const changeFormat = () => {
     let minutes = Math.floor(timer / 60);
     let seconds = timer - minutes * 60;
     seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -19,63 +18,75 @@ function App() {
     return minutes + ":" + seconds;
   };
 
-  const increaseBreak = () => {
+  const breakHandler = (e) => {
     if (isRunning === false) {
-      setNumBreak(numBreak + 1);
-    }
-  };
-  const decreaseBreak = () => {
-    if (isRunning === false) {
-      if (numBreak > 1) {
+      if (e.currentTarget.id === "break-increment" && numBreak < 60) {
+        setNumBreak(numBreak + 1);
+        if (nameTimer === "Break") {
+          setTimer(numBreak * 60 + 60);
+        }
+      } else if (e.currentTarget.id === "break-decrement" && numBreak > 1) {
         setNumBreak(numBreak - 1);
+        if (nameTimer === "Break") {
+          setTimer(numBreak * 60 - 60);
+        }
       }
     }
   };
 
-  const increaseSession = () => {
+  const sessionHandler = (e) => {
     if (isRunning === false) {
-      setNumSession(numSession + 1);
-      setTimer((numSession + 1) * 60);
-    }
-  };
-
-  const decreaseSession = () => {
-    if (isRunning === false) {
-      if (numSession > 1) {
+      if (e.currentTarget.id === "session-increment" && numSession < 60) {
+        setNumSession(numSession + 1);
+        if (nameTimer === "Session") {
+          setTimer(numSession * 60 + 60);
+        }
+      } else if (e.currentTarget.id === "session-decrement" && numSession > 1) {
         setNumSession(numSession - 1);
-        setTimer((numSession - 1) * 60);
+        if (nameTimer === "Session") {
+          setTimer(numSession * 60 - 60);
+        }
       }
     }
   };
 
   //CLOCK FUNCTIONS
-const [nameTimer, setNameTimer] = useState("Session");
+  const [nameTimer, setNameTimer] = useState("Session");
 
   //CONTROLS FUNCTIONS
   const [isRunning, setIsRunning] = useState(false);
   const playPause = useRef();
   const [changeIcon, setChangeIcon] = useState(faPlay);
+  const refAudio = useRef();
 
   const decreaseTimer = () => {
     setTimer(timer - 1);
+  };
+
+  const intervalController = () => {
+    if (timer < 0) {
+      if (nameTimer === "Session") {
+        refAudio.current.play();
+        setTimer(numBreak * 60);
+        setNameTimer("Break");
+      } else {
+        refAudio.current.play();
+        setTimer(numSession * 60);
+        setNameTimer("Session");
+      }
+    }
   };
 
   useEffect(() => {
     if (isRunning === true) {
       const interval = setInterval(() => {
         decreaseTimer();
+        intervalController();
       }, 1000);
-      if (timer === 0) {
-        //AUDIO EFFECT
-        setTimer(numBreak * 60);
-        setNameTimer("Break");
-        if (timer === 0) {
-          setTimer(numSession * 60);
-        }
-      }
       return () => clearInterval(interval);
     }
-  })
+  });
+
   const startStop = () => {
     if (isRunning === false) {
       setChangeIcon(faPause);
@@ -93,26 +104,33 @@ const [nameTimer, setNameTimer] = useState("Session");
     setIsRunning(false);
     setChangeIcon(faPlay);
     setNameTimer("Session");
+    refAudio.current.pause();
+    refAudio.current.currentTime = 0;
   };
-
+  console.log(changeFormat());
   return (
     <div id="pomodoro-clock">
       <h1 id="title">Excercises Timer</h1>
       <Adjust
         numBreak={numBreak}
         numSession={numSession}
-        increaseBreak={increaseBreak}
-        decreaseBreak={decreaseBreak}
-        increaseSession={increaseSession}
-        decreaseSession={decreaseSession}
+        breakHandler={breakHandler}
+        sessionHandler={sessionHandler}
       />
-      <Clock count={changeFormat(timer)} nameTimer={nameTimer} />
+      <Clock count={changeFormat()} nameTimer={nameTimer} />
+
       <Controls
         startStop={startStop}
         reset={reset}
         playPause={playPause}
         changeIcon={changeIcon}
       />
+      <audio
+        id="beep"
+        ref={refAudio}
+        preload="auto"
+        src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav"
+      ></audio>
     </div>
   );
 }

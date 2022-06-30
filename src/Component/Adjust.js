@@ -4,10 +4,8 @@ import { faArrowDown, faArrowUp } from "@fortawesome//free-solid-svg-icons";
 const Adjust = ({
   numBreak,
   numSession,
-  increaseBreak,
-  decreaseBreak,
-  increaseSession,
-  decreaseSession,
+  breakHandler,
+  sessionHandler
 }) => {
   return (
     <div id="adjust">
@@ -16,12 +14,20 @@ const Adjust = ({
           Break Length
         </p>
         <div className="controls-adjust">
-          <button id="break-decrement" className="adjust-button">
-            <FontAwesomeIcon icon={faArrowDown} onClick={decreaseBreak} />
+          <button
+            id="break-decrement"
+            className="adjust-button"
+            onClick={breakHandler}
+          >
+            <FontAwesomeIcon icon={faArrowDown} />
           </button>
           <p id="break-length">{numBreak}</p>
-          <button id="break-increment" className="adjust-button">
-            <FontAwesomeIcon icon={faArrowUp} onClick={increaseBreak} />
+          <button
+            id="break-increment"
+            className="adjust-button"
+            onClick={breakHandler}
+          >
+            <FontAwesomeIcon icon={faArrowUp} />
           </button>
         </div>
       </div>
@@ -31,12 +37,20 @@ const Adjust = ({
           Session Length
         </p>
         <div className="controls-adjust">
-          <button id="session-decrement" className="adjust-button">
-            <FontAwesomeIcon icon={faArrowDown} onClick={decreaseSession} />
+          <button
+            id="session-decrement"
+            className="adjust-button"
+            onClick={sessionHandler}
+          >
+            <FontAwesomeIcon icon={faArrowDown} />
           </button>
           <p id="session-length">{numSession}</p>
-          <button id="session-increment" className="adjust-button">
-            <FontAwesomeIcon icon={faArrowUp} onClick={increaseSession} />
+          <button
+            id="session-increment"
+            className="adjust-button"
+            onClick={sessionHandler}
+          >
+            <FontAwesomeIcon icon={faArrowUp} />
           </button>
         </div>
       </div>
