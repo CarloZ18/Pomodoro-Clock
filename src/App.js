@@ -20,7 +20,7 @@ import {
 function App() {
   const dispatch = useDispatch();
   const state = store.getState();
-  const [timer, setTimer] = useState(1500);
+  const [timer, setTimer] = useState(25 * 60);
 
   //REFS
   const refAudio = useRef();
@@ -37,7 +37,6 @@ function App() {
     if (state.isRunning === false) {
       if (e.currentTarget.id === "break-increment" && state.break < 60) {
         dispatch(breakIncrement());
-
         if (state.nameTimer === "Break") {
           setTimer((state.break + 1) * 60);
         }
@@ -96,20 +95,19 @@ function App() {
 
   const startStop = () => {
     if (state.isRunning === false) {
-     dispatch(start())
+      dispatch(start());
     } else {
-      dispatch(stop())
+      dispatch(stop());
     }
   };
 
   const reset = () => {
-    setTimer(1500);
+    setTimer(25 * 60);
     dispatch(resetAll());
     refAudio.current.pause();
     refAudio.current.currentTime = 0;
   };
 
-  console.log(state.session);
   return (
     <div id="pomodoro-clock">
       <h1 id="title">Excercises Timer</h1>
