@@ -91,7 +91,7 @@ function App() {
       }, 1000);
       return () => clearInterval(interval);
     }
-  }, [state.isRunning, state.intervalID]);
+  }, [state.isRunning, timer]);
 
   const startStop = () => {
     if (state.isRunning === false) {
