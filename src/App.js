@@ -1,19 +1,27 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Adjust from "./Component/Adjust";
 import Clock from "./Component/Clock";
 import Controls from "./Component/Controls";
-import { faPlay, faPause } from "@fortawesome//free-solid-svg-icons";
-
+import { connect, useDispatch } from "react-redux";
+import { store } from "./store/store";
+import {
+  breakIncrement,
+  breakDecrement,
+  sessionIncrement,
+  sessionDecrement,
+  nameTimerSession,
+  nameTimerBreak,
+  intervalID,
+  start,
+  stop,
+  resetAll,
+} from "./store/amount/action";
 
 function App() {
-  //STATES
-  const [numBreak, setNumBreak] = useState(5);
-  const [numSession, setNumSession] = useState(25);
+  const dispatch = useDispatch();
+  const state = store.getState();
   const [timer, setTimer] = useState(1500);
-  const [nameTimer, setNameTimer] = useState("Session");
-  const [isRunning, setIsRunning] = useState(false);
-  const [changeIcon, setChangeIcon] = useState(faPlay);
-  const [intervalID, setIntervalID] = useState(0);
+
   //REFS
   const refAudio = useRef();
 
@@ -24,99 +32,100 @@ function App() {
     minutes = minutes < 10 ? "0" + minutes : minutes;
     return minutes + ":" + seconds;
   };
-  console.log(changeFormat(timer));
 
   const breakHandler = (e) => {
-    if (isRunning === false) {
-      if (e.currentTarget.id === "break-increment" && numBreak < 60) {
-        setNumBreak(numBreak + 1);
-        if (nameTimer === "Break") {
-          setTimer((numBreak + 1) * 60);
+    if (state.isRunning === false) {
+      if (e.currentTarget.id === "break-increment" && state.break < 60) {
+        dispatch(breakIncrement());
+
+        if (state.nameTimer === "Break") {
+          setTimer((state.break + 1) * 60);
         }
-      } else if (e.currentTarget.id === "break-decrement" && numBreak > 1) {
-        setNumBreak(numBreak - 1);
-        if (nameTimer === "Break") {
-          setTimer((numBreak - 1) * 60);
+      } else if (e.currentTarget.id === "break-decrement" && state.break > 1) {
+        dispatch(breakDecrement());
+        if (state.nameTimer === "Break") {
+          setTimer((state.break - 1) * 60);
         }
       }
     }
-    return;
   };
 
   const sessionHandler = (e) => {
-    if (isRunning === false) {
-      if (e.currentTarget.id === "session-increment" && numSession < 60) {
-        setNumSession(numSession + 1);
-        if (nameTimer === "Session") {
-          setTimer((numSession + 1) * 60);
+    if (state.isRunning === false) {
+      if (e.currentTarget.id === "session-increment" && state.session < 60) {
+        dispatch(sessionIncrement());
+        if (state.nameTimer === "Session") {
+          setTimer((state.session + 1) * 60);
         }
       } else if (
         e.currentTarget.id === "session-decrement" &&
-        numSession > 1
+        state.session > 1
       ) {
-        setNumSession(numSession - 1);
-        if (nameTimer === "Session") {
-          setTimer((numSession - 1) * 60);
+        dispatch(sessionDecrement());
+        if (state.nameTimer === "Session") {
+          setTimer((state.session - 1) * 60);
         }
       }
     }
-    return;
   };
 
   const decreaseTimer = () => {
     if (timer > 0) {
       setTimer(timer - 1);
-    } else if (timer === 0 && nameTimer === "Session") {
+    } else if (timer === 0) {
       refAudio.current.play();
-      nameTimer === "Session" ? setNameTimer("Break") : setNameTimer("Session");
-      setTimer(nameTimer === "Session" ? numBreak * 60 : numSession * 60);
+      state.nameTimer === "Session"
+        ? dispatch(nameTimerBreak())
+        : dispatch(nameTimerSession());
+
+      state.nameTimer === "Session"
+        ? setTimer(state.break * 60)
+        : setTimer(state.session * 60);
     }
   };
 
   useEffect(() => {
-    if (isRunning === true) {
+    if (state.isRunning === true) {
       const interval = setInterval(() => {
         decreaseTimer();
-        setIntervalID((seconds) => seconds + 1);
+        dispatch(intervalID());
       }, 1000);
       return () => clearInterval(interval);
     }
-  },[intervalID, isRunning, nameTimer, numBreak, numSession, timer]);
+  }, [state.isRunning, state.intervalID]);
 
   const startStop = () => {
-    if (isRunning === false) {
-      setChangeIcon(faPause);
-      setIsRunning(true);
+    if (state.isRunning === false) {
+     dispatch(start())
     } else {
-      setChangeIcon(faPlay);
-      setIsRunning(false);
+      dispatch(stop())
     }
   };
 
   const reset = () => {
     setTimer(1500);
-    setNumSession(25);
-    setNumBreak(5);
-    setIsRunning(false);
-    setChangeIcon(faPlay);
-    setNameTimer("Session");
-    clearInterval(intervalID);
+    dispatch(resetAll());
     refAudio.current.pause();
     refAudio.current.currentTime = 0;
   };
 
+  console.log(state.session);
   return (
     <div id="pomodoro-clock">
       <h1 id="title">Excercises Timer</h1>
       <Adjust
-        numBreak={numBreak}
-        numSession={numSession}
+        numBreak={state.break}
+        numSession={state.session}
         breakHandler={breakHandler}
         sessionHandler={sessionHandler}
       />
-      <Clock count={changeFormat()} nameTimer={nameTimer} />
+      <Clock count={changeFormat()} nameTimer={state.nameTimer} />
 
-      <Controls startStop={startStop} reset={reset} changeIcon={changeIcon} />
+      <Controls
+        startStop={startStop}
+        reset={reset}
+        changeIcon={state.changeIcon}
+      />
       <audio
         id="beep"
         ref={refAudio}
@@ -127,4 +136,50 @@ function App() {
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    break: state.break,
+    session: state.session,
+    isRunning: state.isRunning,
+    nameTimer: state.nameTimer,
+    changeIcon: state.changeIcon,
+    intervalID: state.intervalID,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    breakIncrement: () => {
+      dispatch(breakIncrement());
+    },
+    breakDecrement: () => {
+      dispatch(breakDecrement());
+    },
+    sessionIncrement: () => {
+      dispatch(sessionIncrement());
+    },
+    sessionDecrement: () => {
+      dispatch(sessionDecrement());
+    },
+    nameTimerSession: () => {
+      dispatch(nameTimerSession());
+    },
+    nameTimerBreak: () => {
+      dispatch(nameTimerBreak());
+    },
+    intervalID: () => {
+      dispatch(intervalID());
+    },
+    start: () => {
+      dispatch(start());
+    },
+    stop: () => {
+      dispatch(stop());
+    },
+    resetAll: () => {
+      dispatch(resetAll());
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
