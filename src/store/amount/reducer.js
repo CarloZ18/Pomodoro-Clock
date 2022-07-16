@@ -1,97 +1,37 @@
 import { faPause, faPlay } from "@fortawesome//free-solid-svg-icons";
+import { createSlice } from "@reduxjs/toolkit";
 
-const estadoInicial = {
-  break: 5,
-  intervalID:0,
-  session: 25,
-  nameTime: "Session",
+const initialState = {
+  intervalID: 0,
   icon: faPlay,
-  reset: false
+  timer: 1500,
+  isRunning: false,
+  breakLength: 5,
+  sessionLength: 25,
+  nameTimer: "Session",
 };
 
-const breakReducer = (state= estadoInicial.break, action) => {
-  switch (action.type) {
-    case "BREAK_INCREMENT":
-      return state + action.payload;
+export const clockSlice = createSlice({
+  name: "clock",
+  initialState,
+  reducers: {
+    start: (state) => {
+      state.icon = faPause;
+    },
+    stop: (state) => {
+      state.icon = faPlay;
+    },
+    resetAll: (state) => {
+      state.intervalID = 0;
+      state.icon = faPlay;
+    },
+    incrementInterval: (state) => {
+      state.intervalID++;
+    } 
+  },
+});
 
-    case "BREAK_DECREMENT":
-      return state - action.payload;
-      case "RESET":
-      return 5;
-    default:
-      return state;
-  }
-};
+export const { start, stop, resetAll,incrementInterval } = clockSlice.actions;
 
-const sessionReducer = (state = estadoInicial.session, action) => {
-  switch (action.type) {
-    case "SESSION_INCREMENT":
-      return state + action.payload;
+export default clockSlice.reducer;
 
-    case "SESSION_DECREMENT":
-      return state - action.payload;
-    case "RESET":
-      return 25;
-    default:
-      return state;
-  }
-};
-
-const isRunningReducer = (state = estadoInicial.reset, action) => {
-  switch (action.type) {
-    case "START":
-      return true;
-    case "STOP":
-      return false;
-    case "RESET":
-      return false;
-    default:
-      return state;
-  }
-};
-
-const nameTimerReducer = (state = estadoInicial.nameTime, action) => {
-  switch (action.type) {
-    case "NAME_TIMER_SESSION":
-      return "Session";
-    case "NAME_TIMER_BREAK":
-      return "Break";
-    case "RESET":
-      return "Session";
-    default:
-      return state;
-  }
-};
-
-const intervalIDReducer = (state = estadoInicial.intervalID, action) => {
-  switch (action.type) {
-    case "INTERVAL_ID":
-      return state + 1;
-    case "RESET":
-      return 0;
-    default:
-      return state;
-  }
-};
-
-const changeIconReducer = (state = estadoInicial.icon, action) => {
-  switch (action.type) {
-    case "STOP":
-      return faPlay;
-    case "START":
-      return faPause;
-    case "RESET":
-      return faPlay;
-    default:
-      return state;
-  }
-};
-
-export {
-  breakReducer,
-  sessionReducer,
-  isRunningReducer,
-  nameTimerReducer,
-  intervalIDReducer,
-  changeIconReducer,
-};

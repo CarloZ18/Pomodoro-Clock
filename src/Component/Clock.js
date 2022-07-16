@@ -1,16 +1,10 @@
-const Clock = ({ count, nameTimer }) => {
+const Clock = ({ count, nameTimer, labelRef, timerRef }) => {
   return (
     <div id="clock">
-      <div
-        id="timer-label"
-        style={count < "01:00" ? { color: "red" } : { color: "white" }}
-      >
+      <div id="timer-label" ref={labelRef}>
         {nameTimer}
       </div>
-      <div
-        id="time-left"
-        style={count < "01:00" ? { color: "red" } : { color: "white" }}
-      >
+      <div id="time-left" ref={timerRef}>
         {count}
       </div>
     </div>
