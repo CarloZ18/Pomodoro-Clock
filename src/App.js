@@ -27,10 +27,6 @@ function App() {
   const timerRef = useRef();
   const labelRef = useRef();
 
-  const contentTimer = () => {
-
-  }
-
   const changeFormat = () => {
     let minutes = Math.floor(timer / 60);
     let seconds = timer - minutes * 60;
