@@ -17,6 +17,7 @@ export const clockSlice = createSlice({
   reducers: {
     start: (state) => {
       state.icon = faPause;
+       state.intervalID++;
     },
     stop: (state) => {
       state.icon = faPlay;
@@ -25,13 +26,10 @@ export const clockSlice = createSlice({
       state.intervalID = 0;
       state.icon = faPlay;
     },
-    incrementInterval: (state) => {
-      state.intervalID++;
-    } 
   },
 });
 
-export const { start, stop, resetAll,incrementInterval } = clockSlice.actions;
+export const { start, stop, resetAll } = clockSlice.actions;
 
 export default clockSlice.reducer;
 

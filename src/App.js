@@ -3,12 +3,7 @@ import Adjust from "./Component/Adjust";
 import Clock from "./Component/Clock";
 import Controls from "./Component/Controls";
 import { connect, useDispatch, useSelector } from "react-redux";
-import {
-  start,
-  stop,
-  resetAll,
-  incrementInterval,
-} from ".//store/amount/reducer";
+import { start, stop, resetAll } from ".//store/amount/reducer";
 import useBreak from "./hooks/useBreak";
 import useSession from "./hooks/useSession";
 import useNameTimer from "./hooks/useNameTimer";
@@ -31,6 +26,10 @@ function App() {
   const refAudio = useRef();
   const timerRef = useRef();
   const labelRef = useRef();
+
+  const contentTimer = () => {
+
+  }
 
   const changeFormat = () => {
     let minutes = Math.floor(timer / 60);
@@ -90,7 +89,6 @@ function App() {
     } else if (timer === 0) {
       refAudio.current.play();
       changeNameTimer();
-
       nameTimer === "Session"
         ? setTimer(breakLength * 60)
         : setTimer(sessionLength * 60);
@@ -107,7 +105,7 @@ function App() {
       }
       const interval = setInterval(() => {
         decreaseTimer();
-        dispatch(incrementInterval());
+        dispatch(start());
       }, 1000);
       return () => clearInterval(interval);
     }
@@ -145,6 +143,7 @@ function App() {
         breakHandler={breakHandler}
         sessionHandler={sessionHandler}
       />
+    
       <Clock
         count={changeFormat()}
         nameTimer={nameTimer}
@@ -174,7 +173,6 @@ const mapDispatchToProps = (dispatch) => {
     start: () => dispatch(start()),
     stop: () => dispatch(stop()),
     resetAll: () => dispatch(resetAll()),
-    incrementInterval: () => dispatch(incrementInterval()),
   };
 };
 
