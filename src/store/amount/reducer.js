@@ -4,11 +4,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   intervalID: 0,
   icon: faPlay,
-  timer: 1500,
-  isRunning: false,
-  breakLength: 5,
-  sessionLength: 25,
-  nameTimer: "Session",
 };
 
 export const clockSlice = createSlice({
