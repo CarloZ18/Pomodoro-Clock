@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowDown, faArrowUp } from "@fortawesome//free-solid-svg-icons";
 
 const Adjust = ({
  breakLength,
   sessionLength,
   breakHandler,
-  sessionHandler
+  sessionHandler,
+  faArrowDown,
+  faArrowUp,
 }) => {
   return (
     <div id="adjust">
@@ -19,7 +20,7 @@ const Adjust = ({
             className="adjust-button"
             onClick={breakHandler}
           >
-            <FontAwesomeIcon icon={faArrowDown} />
+            <FontAwesomeIcon icon={faArrowDown}  />
           </button>
           <p id="break-length">{breakLength}</p>
           <button

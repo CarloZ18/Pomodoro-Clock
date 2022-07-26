@@ -1,39 +1,45 @@
-import { useRef, useEffect } from "react";
+import { memo, useEffect, useRef, useState } from "react";
+import {
+  faArrowDown,
+  faArrowUp,
+  faPause,
+  faPlay,
+  faRefresh,
+} from "@fortawesome//free-solid-svg-icons";
 import Adjust from "./Component/Adjust";
 import Clock from "./Component/Clock";
 import Controls from "./Component/Controls";
-import { connect, useDispatch, useSelector } from "react-redux";
-import { start, stop, resetAll } from ".//store/amount/reducer";
 import useBreak from "./hooks/useBreak";
 import useSession from "./hooks/useSession";
 import useNameTimer from "./hooks/useNameTimer";
 import useRunning from "./hooks/useRunning";
-import useTimer from "./hooks/useTimer";
+import { useInterval } from "usehooks-ts";
 
 function App() {
-  const dispatch = useDispatch();
-  const icon = useSelector((state) => state.clock.icon);
-
   //CUSTOM HOOKS
-  const [timer, setTimer] = useTimer(1500);
-  const [isRunning, changeRunning, resetRunning] = useRunning(false);
+  /* const [isRunning, changeRunning, resetRunning] = useRunning(false);
   const [breakLength, incrementBreak, decrementBreak, resetBreak] = useBreak(5);
   const [sessionLength, incrementSession, decrementSession, resetSession] =
     useSession(25);
-  const [nameTimer, changeNameTimer, resetNameTimer] = useNameTimer("Session");
+  const [nameTimer, changeNameTimer, resetNameTimer] = useNameTimer("Session");*/
+
+  //STATES
+  const [icon, setIcon] = useState(faPlay);
+  const [minutes, setMinutes] = useState(25);
+  const [seconds, setSeconds] = useState(0);
+  const [intervalId, setIntervalId] = useState(0);
+  const [nameTimer, setNameTimer] = useState("Session");
+  const [isRunning, setIsRunning] = useState(false);
+  const [sessionLength, setSessionLength] = useState(25);
+  const [breakLength, setBreakLength] = useState(5);
+
+  let zeroMinutes = minutes < 10 ? "0" + minutes : minutes;
+  let zeroSecond = seconds < 10 ? "0" + seconds : seconds;
 
   //REFS
   const refAudio = useRef();
   const timerRef = useRef();
   const labelRef = useRef();
-
-  const changeFormat = () => {
-    let minutes = Math.floor(timer / 60);
-    let seconds = timer - minutes * 60;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    return minutes + ":" + seconds;
-  };
 
   const breakHandler = (e) => {
     if (
@@ -41,19 +47,19 @@ function App() {
       e.currentTarget.id === "break-increment" &&
       breakLength < 60
     ) {
-      incrementBreak();
-      nameTimer === "Break"
-        ? setTimer((breakLength + 1) * 60)
-        : setTimer(timer);
+      setBreakLength(breakLength + 1);
+      nameTimer === "Break" ? setMinutes(breakLength + 1) : setMinutes(minutes);
+
+      nameTimer === "Break" ? setSeconds(0) : setSeconds(seconds);
     } else if (
       isRunning === false &&
       e.currentTarget.id === "break-decrement" &&
       breakLength > 1
     ) {
-      decrementBreak();
-      nameTimer === "Break"
-        ? setTimer((breakLength - 1) * 60)
-        : setTimer(timer);
+      setBreakLength(breakLength - 1);
+      nameTimer === "Break" ? setMinutes(breakLength - 1) : setMinutes(minutes);
+
+      nameTimer === "Break" ? setSeconds(0) : setSeconds(seconds);
     }
   };
 
@@ -63,72 +69,91 @@ function App() {
       e.currentTarget.id === "session-increment" &&
       sessionLength < 60
     ) {
-      incrementSession();
+      setSessionLength(sessionLength + 1);
       nameTimer === "Session"
-        ? setTimer((sessionLength + 1) * 60)
-        : setTimer(timer);
+        ? setMinutes(sessionLength + 1)
+        : setMinutes(minutes);
+
+      nameTimer === "Session" ? setSeconds(0) : setSeconds(seconds);
     } else if (
       isRunning === false &&
       e.currentTarget.id === "session-decrement" &&
       sessionLength > 1
     ) {
-      decrementSession();
+      setSessionLength(sessionLength - 1);
       nameTimer === "Session"
-        ? setTimer((sessionLength - 1) * 60)
-        : setTimer(timer);
+        ? setMinutes(sessionLength - 1)
+        : setMinutes(minutes);
+
+      nameTimer === "Session" ? setSeconds(0) : setSeconds(seconds);
+    }
+  };
+
+  const changeTimer = () => {
+    if (nameTimer === "Session") {
+      setMinutes(breakLength);
+      setSeconds(0);
+      setNameTimer("Break");
+    } else {
+      setMinutes(sessionLength);
+      setSeconds(0);
+      setNameTimer("Session");
     }
   };
 
   const decreaseTimer = () => {
-    if (timer > 0) {
-      setTimer(timer - 1);
-    } else if (timer === 0) {
+    if (minutes === 0 && seconds === 0) {
       refAudio.current.play();
-      changeNameTimer();
-      nameTimer === "Session"
-        ? setTimer(breakLength * 60)
-        : setTimer(sessionLength * 60);
-      timerRef.current.style.color = "white";
-      labelRef.current.style.color = "white";
+      changeTimer();
+    } else if (seconds > 0) {
+      setSeconds(seconds - 1);
+    } else {
+      setMinutes(minutes - 1);
+      setSeconds(59);
     }
+    setIntervalId(intervalId + 1);
   };
 
-  useEffect(() => {
-    if (isRunning === true) {
-      if (timer < 60) {
-        timerRef.current.style.color = "red";
-        labelRef.current.style.color = "red";
-      }
-      const interval = setInterval(() => {
-        decreaseTimer();
-        dispatch(start());
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [isRunning, timer]);
+  useInterval(
+    () => {
+      decreaseTimer();
+    },
+    isRunning ? 1000 : null
+  );
 
   const startStop = () => {
     if (isRunning === false) {
-      dispatch(start());
-      changeRunning(true);
+      setIsRunning(true);
+      setIcon(faPause);
     } else {
-      dispatch(stop());
-      changeRunning(false);
+      setIsRunning(false);
+      setIcon(faPlay);
     }
   };
-
-  const reset = () => {
-    setTimer(1500);
-    dispatch(resetAll());
-    resetRunning();
-    resetNameTimer();
-    resetSession();
-    resetBreak();
+  const resetAll = () => {
+    setMinutes(25);
+    setSeconds(0);
+    setIcon(faPlay);
+    setIsRunning(false);
+    setSessionLength(25);
+    setBreakLength(5);
+    setNameTimer("Session");
+    setIntervalId(0);
     refAudio.current.pause();
     refAudio.current.currentTime = 0;
     timerRef.current.style.color = "white";
     labelRef.current.style.color = "white";
   };
+
+  useEffect(() => {
+    if (minutes === 0 && seconds <= 59) {
+      timerRef.current.style.color = "red";
+      labelRef.current.style.color = "red";
+    } else {
+      timerRef.current.style.color = "white";
+      labelRef.current.style.color = "white";
+    }
+  }, [minutes, seconds]);
 
   return (
     <div id="pomodoro-clock">
@@ -138,16 +163,23 @@ function App() {
         sessionLength={sessionLength}
         breakHandler={breakHandler}
         sessionHandler={sessionHandler}
+        faArrowDown={faArrowDown}
+        faArrowUp={faArrowUp}
       />
-    
+
       <Clock
-        count={changeFormat()}
+        count={`${zeroMinutes}:${zeroSecond}`}
         nameTimer={nameTimer}
         timerRef={timerRef}
         labelRef={labelRef}
       />
 
-      <Controls startStop={startStop} reset={reset} changeIcon={icon} />
+      <Controls
+        startStop={startStop}
+        reset={resetAll}
+        icon={icon}
+        faRefresh={faRefresh}
+      />
       <audio
         id="beep"
         ref={refAudio}
@@ -158,7 +190,7 @@ function App() {
   );
 }
 
-const mapStateToProps = (state) => {
+/*const mapStateToProps = (state) => {
   return {
     state,
   };
@@ -170,6 +202,8 @@ const mapDispatchToProps = (dispatch) => {
     stop: () => dispatch(stop()),
     resetAll: () => dispatch(resetAll()),
   };
-};
+};*/
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+/*export default connect(mapStateToProps, mapDispatchToProps)(App);*/
+
+export default memo(App);

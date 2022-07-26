@@ -14,7 +14,6 @@ const useSession = (initialState) => {
   const resetSession = () => {
     setSessionLength(initialState);
   };
-  console.log(sessionLength)
   return [sessionLength, incrementSession, decrementSession, resetSession];
 };
 
