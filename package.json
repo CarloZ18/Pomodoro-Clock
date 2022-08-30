@@ -6,6 +6,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
+    "@redux-devtools/extension": "^3.2.2",
     "@reduxjs/toolkit": "^1.8.3",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -13,13 +14,12 @@
     "accurate-interval": "^1.0.9",
     "jquery": "^3.6.0",
     "react": "^18.2.0",
-    "react-circular-progressbar": "^2.1.0",
-    "react-countdown-circle-timer": "^3.0.9",
     "react-dom": "^18.2.0",
-    "react-helmet": "^6.1.0",
     "react-redux": "^8.0.2",
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
+    "redux-thunk": "^2.4.1",
+    "use-interval": "^1.4.0",
     "usehooks-ts": "^2.6.0",
     "web-vitals": "^2.1.4"
   },
@@ -48,6 +48,7 @@
     ]
   },
   "devDependencies": {
-    "@redux-devtools/core": "^3.13.1"
+    "@redux-devtools/core": "^3.13.1",
+    "redux-devtools-extension": "^2.13.9"
   }
 }

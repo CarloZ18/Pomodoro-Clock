@@ -1,9 +1,10 @@
+import { composeWithDevTools } from "redux-devtools-extension";
 import { configureStore } from "@reduxjs/toolkit";
-import  {clockSlice}  from "./amount/reducer";
+import { clockSlice } from "./amount/reducer";
 
 export const store = configureStore(
   {
-    reducer: { clock: clockSlice.reducer },
+    reducer: clockSlice.reducer,
   },
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeWithDevTools()
 );

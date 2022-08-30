@@ -17,6 +17,7 @@ const Adjust = ({
         <div className="controls-adjust">
           <button
             id="break-decrement"
+            value="-"
             className="adjust-button"
             onClick={breakHandler}
           >
@@ -25,6 +26,7 @@ const Adjust = ({
           <p id="break-length">{breakLength}</p>
           <button
             id="break-increment"
+            value="+"
             className="adjust-button"
             onClick={breakHandler}
           >
@@ -40,6 +42,7 @@ const Adjust = ({
         <div className="controls-adjust">
           <button
             id="session-decrement"
+            value="-"
             className="adjust-button"
             onClick={sessionHandler}
           >
@@ -48,6 +51,7 @@ const Adjust = ({
           <p id="session-length">{sessionLength}</p>
           <button
             id="session-increment"
+            value="+"
             className="adjust-button"
             onClick={sessionHandler}
           >
