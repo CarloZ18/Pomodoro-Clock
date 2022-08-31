@@ -22,7 +22,6 @@ import {
   changeTimerB,
   changeTimerS,
   decrementTimer,
-  controlLengthB,
 } from "./store/amount/reducer";
 
 function App() {
@@ -67,17 +66,18 @@ function App() {
   };
 
   const startStop = () => {
-    if (intervalId) {
+    if (isRunning === true) {
       dispatch(stop());
       setIcon(faPlay);
       clearInterval(intervalId);
-      setIntervalId(0);
+      setIntervalId(intervalId);
       return;
     } else {
-      const newInterval = setInterval(() => {
-        dispatch(decrementTimer());
-      }, 1000);
-      setIntervalId(newInterval);
+      setIntervalId(
+        setInterval(() => {
+          dispatch(decrementTimer());
+        }, 1000)
+      );
       dispatch(start());
       setIcon(faPause);
     }
@@ -85,6 +85,7 @@ function App() {
 
   const reset = () => {
     clearInterval(intervalId);
+    setIntervalId(0);
     dispatch(resetAll());
     setIcon(faPlay);
     refAudio.current.pause();
@@ -93,18 +94,12 @@ function App() {
     labelRef.current.style.color = "white";
   };
   const changeTimer = () => {
-    if (timer === 0) {
+    if (timer < 0 && nameTimer === "Session") {
       refAudio.current.play();
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-      if (nameTimer === "Session") {
-        dispatch(changeTimerB());
-        startStop();
-      } else {
-        dispatch(changeTimerS());
-        startStop();
-      }
+      dispatch(changeTimerB());
+    } else if (timer < 0 && nameTimer === "Break") {
+      refAudio.current.play();
+      dispatch(changeTimerS());
     }
   };
 

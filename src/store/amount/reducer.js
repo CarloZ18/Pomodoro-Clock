@@ -1,3 +1,4 @@
+/* eslint-disable no-self-assign */
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -37,8 +38,8 @@ export const clockSlice = createSlice({
       if (state.breakLength > 1) {
         state.breakLength--;
         state.nameTimer === "Break"
-        ? (state.timer = state.breakLength * 60)
-        : (state.timer = state.timer);
+          ? (state.timer = state.breakLength * 60)
+          : (state.timer = state.timer);
       }
     },
     incrementSession: (state) => {
@@ -50,8 +51,9 @@ export const clockSlice = createSlice({
       }
     },
     decrementSession: (state) => {
-      if (state.sessionLength > 1) {
+      if (state.sessionLength > 1 && state.nameTimer === "Session") {
         state.sessionLength--;
+        
         state.nameTimer === "Session"
           ? (state.timer = state.sessionLength * 60)
           : (state.timer = state.timer);
